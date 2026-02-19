@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>David Molizane - Software & AI Engineer</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: Arial, sans-serif;
+                line-height: 1.3;
+                color: #000;
+                background: #f5f5f5;
+                font-size: 10.5pt;
+            }
+
+            .container {
+                max-width: 210mm;
+                margin: 0 auto;
+                background: #fff;
+                padding: 0.75in;
+                min-height: 297mm;
+                position: relative;
+            }
+
+            @media print {
+                body {
+                    background: #fff;
+                }
+                .container {
+                    padding: 0.5in;
+                    margin: 0;
+                }
+            }
+
+            /* Header */
+            .header {
+                text-align: center;
+                margin-bottom: 16px;
+                border-bottom: 1px solid #000;
+                padding-bottom: 8px;
+            }
+
+            .header h1 {
+                font-size: 20pt;
+                font-weight: bold;
+                margin-bottom: 4px;
+                letter-spacing: 1px;
+            }
+
+            .header .title {
+                font-size: 11pt;
+                margin-bottom: 6px;
+                font-weight: normal;
+            }
+
+            .contact {
+                font-size: 9.5pt;
+                line-height: 1.4;
+            }
+
+            .contact a {
+                color: #000;
+                text-decoration: none;
+            }
+
+            .contact a:hover {
+                text-decoration: underline;
+            }
+
+            /* Section Headers */
+            .section {
+                margin-bottom: 14px;
+            }
+
+            .section-title {
+                font-size: 11pt;
+                font-weight: bold;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                margin-bottom: 6px;
+                border-bottom: 1px solid #000;
+                padding-bottom: 2px;
+            }
+
+            /* Summary */
+            .summary {
+                text-align: justify;
+                line-height: 1.4;
+            }
+
+            /* Skills */
+            .skills-grid {
+                line-height: 1.5;
+            }
+
+            .skill-category {
+                margin-bottom: 4px;
+            }
+
+            .skill-category strong {
+                font-weight: bold;
+            }
+
+            /* Experience */
+            .job {
+                margin-bottom: 10px;
+            }
+
+            .job-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                margin-bottom: 2px;
+            }
+
+            .job-title-company {
+                font-weight: bold;
+                font-size: 10.5pt;
+            }
+
+            .job-date {
+                font-style: italic;
+                font-size: 9.5pt;
+                color: #333;
+            }
+
+            .job-position {
+                font-style: italic;
+                margin-bottom: 4px;
+                font-size: 10pt;
+            }
+
+            .job ul {
+                margin-left: 18px;
+                margin-top: 3px;
+            }
+
+            .job li {
+                margin-bottom: 3px;
+                line-height: 1.35;
+            }
+
+            /* Projects */
+            .project {
+                margin-bottom: 8px;
+            }
+
+            .project-header {
+                font-weight: bold;
+                margin-bottom: 3px;
+            }
+
+            .project-header a {
+                color: #000;
+                text-decoration: none;
+            }
+
+            .project-description {
+                line-height: 1.4;
+            }
+
+            .project ul {
+                margin-left: 18px;
+                margin-top: 3px;
+            }
+
+            .project li {
+                margin-bottom: 3px;
+                line-height: 1.35;
+            }
+
+            /* Education */
+            .education-item {
+                margin-bottom: 6px;
+            }
+
+            .education-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+            }
+
+            .education-school {
+                font-weight: bold;
+            }
+
+            .education-date {
+                font-style: italic;
+                font-size: 9.5pt;
+                color: #333;
+            }
+
+            .education-degree {
+                font-size: 10pt;
+            }
+
+            /* Metrics highlighting */
+            strong.metric {
+                font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container" id="resume-container">
+            <!-- Header -->
+            <div class="header">
+                <h1>DAVID MOLIZANE</h1>
+                <div class="title">Software & AI Engineer</div>
+                <div class="contact">
+                    <a href="mailto:david.molizane@icloud.com">david.molizane@icloud.com</a> |
+                    <a href="https://github.com/molizanee" target="_blank"
+                        >github.com/molizanee</a
+                    >
+                    |
+                    <a href="https://www.linkedin.com/in/david-molizane/" target="_blank">linkedin.com/in/david-molizane</a>
+                </div>
+            </div>
+
+            <!-- Professional Summary -->
+            <div class="section">
+                <div class="section-title">Professional Summary</div>
+                <div class="summary">
+                    <strong>Software & AI Engineer</strong> with
+                    <strong>2+ years</strong> of experience building AI-powered
+                    and full-stack applications. Proven expertise architecting
+                    production
+                    <strong>RAG (Retrieval-Augmented Generation) systems</strong>
+                    with <strong>vector databases (Qdrant, pgvector)</strong>,
+                    <strong>LLM integration (Langchain, Pydantic AI)</strong>,
+                    <strong>document ingestion, chunking, embeddings generation,
+                    and semantic retrieval</strong>.
+                    Architected <strong>multi-agent workflows</strong> with state management via
+                    <strong>LangGraph checkpoints</strong> and deterministic routing through
+                    <strong>semantic validation layers</strong>
+                    achieving <strong>40% conversion increase</strong> and
+                    <strong>60% support reduction</strong>. Proficiency in
+                    building backend systems with
+                    <strong>Python (FastAPI, SQLAlchemy)</strong>,
+                    <strong>Node.js & Bun.js (Express.js, Next.js, React.js,
+                    Vitest)</strong>,
+                    <strong>AWS (S3, EC2, Bedrock)</strong>,
+                    <strong>GCP (Bucket, Vertex AI, Cloud Run)</strong>, and
+                    <strong>Docker containers</strong> and
+                    <strong>CI/CD pipelines (GitHub Actions)</strong>.
+                    Architected solutions that process huge amounts of data,
+                    increased company productivity, and reduced costs.
+                    Participated in the first AI Team at
+                    <strong>Grupo Guanabara</strong> (Brazil's largest bus
+                    transportation conglomerate with 20,000+ employees),
+                    successfully leading the implementation of a healthy AI
+                    culture, reducing AI costs by <strong>30%</strong> with
+                    LiteLLM proxy optimization, and eliminating
+                    <strong>1+ day of manual work</strong> through AI
+                    automation.
+                </div>
+            </div>
+
+            <!-- Technical Skills -->
+            <div class="section">
+                <div class="section-title">Technical Skills</div>
+                <div class="skills-grid">
+                    <div class="skill-category">
+                        <strong>AI & Data:</strong> RAG systems (40% retrieval accuracy improvement),
+                        Vector Databases (Qdrant, pgvector),
+                        LLM Integration (Langchain, Pydantic AI), Embeddings,
+                        Document Chunking, Semantic Search, Prompt Engineering,
+                        Synthetic Data, LiteLLM (30% cost reduction), LangFuse
+                    </div>
+                    <div class="skill-category">
+                        <strong>Languages & Frameworks:</strong> Python,
+                        FastAPI, SQLAlchemy, JavaScript, TypeScript, Node.js,
+                        Bun.js, Express.js, GoLang, Go-chi, React, Next.js,
+                        Prisma ORM, Drizzle ORM
+                    </div>
+                    <div class="skill-category">
+                        <strong>Data & Infrastructure:</strong> PostgreSQL,
+                        MongoDB, Redis, Microsoft SQL Server, MySQL, REST APIs,
+                        WebSockets
+                    </div>
+                    <div class="skill-category">
+                        <strong>Cloud & DevOps:</strong> AWS (EC2, S3, Route 53,
+                        Bedrock), GCP (VM, Cloud Run, Bucket, Vertex AI),
+                        Docker, Kubernetes, Terraform, CI/CD (GitHub Actions),
+                        Observability (Grafana)
+                    </div>
+                    <div class="skill-category">
+                        <strong>Testing & Practices:</strong> Jest, Vitest,
+                        React Testing Library, Agile/Scrum, Microservices
+                    </div>
+                    <div class="skill-category">
+                        <strong>AI Safety & Guardrails:</strong> Content moderation (AWS Bedrock Guardrail),
+                        PII redaction (Microsoft Presidio), Deterministic response design, Hallucination mitigation
+                    </div>
+                </div>
+            </div>
+
+            <!-- Professional Experience -->
+            <div class="section">
+                <div class="section-title">Professional Experience</div>
+
+                <div class="job">
+                    <div class="job-header">
+                        <div class="job-title-company">Molizane SYS (Freelancer)</div>
+                        <div class="job-date">February 2025 - Present</div>
+                    </div>
+                    <div class="job-position">AI Engineer</div>
+                    <ul>
+                        <li>
+                            Developing <strong>FestaPro AI Agent</strong>, an agentic system built in <strong>Python with FastAPI</strong>. Features a <strong>React Agent for WhatsApp Business API</strong> that returns information about event venues and parties, answers contract questions, schedules venue visits, sends venue photos, and provides social links. Uses <strong>Tortoise ORM</strong> for schema management, <strong>LangChain and LangGraph</strong> for conversation state and flow routing, with checkpoints saved in <strong>PostgreSQL</strong>. Supports file uploads (PDF, TXT, DOCX) to <strong>QdrantDB</strong> for semantic context.
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="job">
+                    <div class="job-header">
+                        <div class="job-title-company">Grupo Guanabara</div>
+                        <div class="job-date">September 2025 - Present</div>
+                    </div>
+                    <div class="job-position">AI Engineer</div>
+                    <ul>
+                        <li>
+                            Built <strong>Commercial AI</strong>, a Text-to-SQL AI Agent that receives business questions and returns answers using real company data. Architected with <strong>n8n multi-workflow and multi-agent system</strong>, <strong>QdrantDB</strong> for semantic search validation, <strong>LiteLLM Proxy</strong> for model consumption, <strong>CubeJS semantic layer</strong> for SQL payload generation with access to the data lake, and <strong>Langfuse</strong> for traces and evals. <strong>Impact:</strong> Executives gain quick business insights without relying on BI team, drastically reducing response time for business questions. Low cost achieved through strategic LLM selection: task-specific routing between Claude Sonnet 4.5, GPT-5, Nvidia Nemotron, Llama 4/3.1, and Qwen 3 based on cost-quality benchmarking.
+                        </li>
+                        <li>
+                            Designed <strong>Guanabara Chat</strong>, a complete AI stack for the entire company integrating <strong>Open WebUI</strong> for employee interface, <strong>LiteLLM Proxy</strong> for model and cost management per team, <strong>AWS Bedrock</strong> and <strong>Google Vertex AI</strong> for models, <strong>Langfuse</strong> for traces and feedback, <strong>Microsoft Presidio</strong> for PII data masking, and <strong>AWS Bedrock Guardrail</strong> for content moderation. <strong>Impact:</strong> Secure AI access company-wide while keeping sensitive data within local infrastructure.
+                        </li>
+                        <li>
+                            Deployed <strong>PCO</strong>, a <strong>WhatsApp Business Meta API</strong> AI assistant helping bus drivers with incidents and support. Uses <strong>QdrantDB</strong> for incident embeddings ensuring deterministic responses and minimizing hallucinations in critical situations, <strong>Redis DB</strong> for conversation history management, and <strong>Langfuse</strong> for traces and evals. <strong>Impact:</strong> Drivers gain efficiency and accuracy on how to proceed in critical situations.
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="job">
+                    <div class="job-header">
+                        <div class="job-title-company">Grupo Guanabara</div>
+                        <div class="job-date">February 2025 - August 2025</div>
+                    </div>
+                    <div class="job-position">Automation Developer</div>
+                    <ul>
+                        <li>
+                            Built <strong>Punctuality</strong>, a real-time vehicle delay alerting data pipeline. Consumes from a <strong>WebSocket</strong> bringing GPS data (service built in <strong>Golang</strong>), processes data in <strong>n8n</strong> with async architecture, executes queries on <strong>AWS Athena</strong>, and performs geolocation and time calculations for real-time delay alerts. <strong>Processes over 864,000 vehicle data points per day</strong> with low cost and high efficiency. <strong>Impact:</strong> Strategic business vision with massive generation of relevant data (routes, vehicles, and times with most delays), opening possibilities for ML to predict delays.
+                        </li>
+                        <li>
+                            Created <strong>Orders Track</strong>, a full-stack application (<strong>React.js/Next.js</strong> frontend, <strong>Express.js/Bun.js</strong> backend) providing an interactive real-time dashboard for delayed vehicle parts orders with automatic email alerts. Uses <strong>Supabase auth</strong> for user management and <strong>PostgreSQL</strong> for data storage. <strong>Impact:</strong> Logistics team <strong>40% more efficient</strong> due to optimized unified analysis of delayed order responsibilities.
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="job">
+                    <div class="job-header">
+                        <div class="job-title-company">Bravion</div>
+                        <div class="job-date">January 2024 - February 2025</div>
+                    </div>
+                    <div class="job-position">Junior Full-Stack Engineer</div>
+                    <ul>
+                        <li>
+                            Designed and built the main microservice for
+                            <strong>GenX</strong>, a clinical genetics platform
+                            processing large volumes of patient genetic data and
+                            generating <strong>PDF reports in under one
+                            minute</strong>. Stack: <strong>Node.js, TypeScript,
+                            Prisma ORM, PostgreSQL, react-pdf, Google Cloud
+                            Platform</strong>.
+                        </li>
+                        <li>
+                            Developed core functionalities for
+                            <strong>Cmorq</strong>, an AI-powered cryptocurrency
+                            platform with <strong>LGPD compliance</strong>,
+                            building a secure <strong>Next.js</strong>
+                            application with <strong>WalletConnect APIs</strong>
+                            for user financial data protection.
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="job">
+                    <div class="job-header">
+                        <div class="job-title-company">Bravion</div>
+                        <div class="job-date">September 2023 - December 2023</div>
+                    </div>
+                    <div class="job-position">Intern Full-Stack Engineer</div>
+                    <ul>
+                        <li>
+                            Designed a robust data migration process from legacy
+                            platform to <strong>PostgreSQL</strong>, including a
+                            <strong>Python-based web crawler</strong> capable of
+                            adapting to multiple legacy webpage layouts.
+                        </li>
+                        <li>
+                            Built and maintained the <strong>Motorbooks</strong>
+                            full-stack application with <strong>FastAPI</strong>
+                            backend and <strong>React.js/Next.js</strong>
+                            frontend, delivering a modern interface that
+                            improved usability and maintainability.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Education & Languages -->
+            <div class="section">
+                <div class="section-title">Education & Languages</div>
+                <div class="education-item">
+                    <strong>Bachelor's Degree in Computer Engineering</strong> |
+                    Fundação Herminio Ometto | 2024 - 2030 (Expected, currently 3rd year)
+                </div>
+                <div class="education-item" style="margin-top: 4px">
+                    <strong>Languages:</strong> English (Fluent - Professional
+                    Working Proficiency), Portuguese (Native)
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
