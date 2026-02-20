@@ -11,6 +11,7 @@ from app.models.base import Base
 from app.routers.health import router as health_router
 from app.routers.payment import router as payment_router
 from app.routers.resume import router as resume_router
+from app.routers.user import router as user_router
 
 # Configure logging
 logging.basicConfig(
@@ -29,6 +30,17 @@ async def lifespan(app: FastAPI):
     """Application lifespan: startup and shutdown events."""
     settings = get_settings()
     logger.info("Starting %s...", settings.app_name)
+
+    # Log feature flags status
+    flags = []
+    if settings.dev:
+        flags.append("DEV")
+    if settings.experimental_job_details:
+        flags.append("EXPERIMENTAL_JOB_DETAILS")
+    if flags:
+        logger.info("Enabled feature flags: %s", ", ".join(flags))
+    else:
+        logger.info("No feature flags enabled")
 
     # Create database tables with retries
     engine = get_engine()
@@ -106,6 +118,7 @@ def create_app() -> FastAPI:
     app.include_router(health_router)
     app.include_router(payment_router)
     app.include_router(resume_router)
+    app.include_router(user_router)
 
     return app
 

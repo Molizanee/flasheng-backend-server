@@ -14,6 +14,14 @@ class EducationItem(BaseModel):
     date_range: str
 
 
+class PersonalProjectItem(BaseModel):
+    name: str
+    description: str
+    technologies: str
+    url: str = ""
+    highlights: list[str]
+
+
 class TechnicalSkills(BaseModel):
     ai_data: str = ""
     languages_frameworks: str = ""
@@ -36,3 +44,5 @@ class ResumeData(BaseModel):
     experience: list[ExperienceItem]
     education: list[EducationItem]
     languages: list[str] = []
+    personal_projects: list[PersonalProjectItem] = []
+    seo_keywords: str = ""

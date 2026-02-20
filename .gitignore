@@ -34,3 +34,5 @@ htmlcov/
 
 # Playwright
 playwright-browsers/
+
+api_responses_logs/

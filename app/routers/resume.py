@@ -5,19 +5,25 @@ from datetime import datetime, timezone
 from uuid import UUID
 
 import httpx
-from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, Form, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth import get_current_user_id
 from app.database import get_db
 from app.models.job import ResumeJob
+from app.models.user import User
 from app.schemas.job import (
     MyResumeItem,
     ResumeDownloadLinks,
     ResumeJobCreatedResponse,
     ResumeJobResponse,
 )
+from app.services.linkedin_scraper import (
+    LinkedInScraper,
+    validate_linkedin_job_url,
+)
+from app.config import get_settings
 from app.services.payment import payment_service
 from app.services.resume_builder import ResumeBuilder
 
@@ -25,22 +31,27 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/v1/resume", tags=["resume"])
 
+settings = get_settings()
+
 
 async def _run_resume_pipeline(
     job_id: str,
-    github_token: str,
-    linkedin_pdf_bytes: bytes,
-    db_url: str,
+    job_url: str,
+    profile_url: str,
+    language: str,
+    platform_content: str = "linkedin",
+    github_token: str | None = None,
 ):
     """Background task that runs the full resume generation pipeline.
 
     This runs outside the request lifecycle, so it manages its own DB session.
     """
     from app.database import get_async_session
+    from app.services.github import GitHubService
+    from app.services.linkedin_scraper import LinkedInScraper
 
     session_factory = get_async_session()
     async with session_factory() as session:
-        # Mark job as processing
         job = await session.get(ResumeJob, job_id)
         if not job:
             logger.error("[Job %s] Job not found in database", job_id)
@@ -51,21 +62,64 @@ async def _run_resume_pipeline(
         await session.commit()
 
         try:
+            scraper = LinkedInScraper()
+
+            job_data = {}
+            if job_url and settings.experimental_job_details:
+                logger.info("[Job %s] Scraping LinkedIn job: %s", job_id, job_url)
+                job_data = await scraper.scrape_job(job_url)
+                logger.info(
+                    "[Job %s] Job scraped: %s at %s",
+                    job_id,
+                    job_data.get("title"),
+                    job_data.get("company"),
+                )
+            elif job_url and not settings.experimental_job_details:
+                logger.info("[Job %s] Skipping job scraping - experimental_job_details disabled", job_id)
+
+            linkedin_data = {}
+            github_data = {}
+
+            if platform_content in ["linkedin", "mixed"]:
+                if profile_url:
+                    logger.info(
+                        "[Job %s] Scraping LinkedIn profile: %s", job_id, profile_url
+                    )
+                    linkedin_data = await scraper.scrape_profile(profile_url)
+                    logger.info(
+                        "[Job %s] Profile scraped: %s",
+                        job_id,
+                        linkedin_data.get("name"),
+                    )
+
+            if platform_content in ["github", "mixed"]:
+                if github_token:
+                    logger.info("[Job %s] Fetching GitHub profile...", job_id)
+                    github_service = GitHubService(token=github_token)
+                    github_data = await github_service.fetch_comprehensive_profile()
+                    logger.info(
+                        "[Job %s] GitHub data fetched for user: %s",
+                        job_id,
+                        github_data.get("profile", {}).get("username"),
+                    )
+
             builder = ResumeBuilder()
             result = await builder.build_resume(
-                github_token=github_token,
-                linkedin_pdf_bytes=linkedin_pdf_bytes,
+                db=session,
+                job_data=job_data,
+                linkedin_data=linkedin_data,
+                github_data=github_data,
+                platform_content=platform_content,
+                language=language,
                 job_id=job_id,
             )
 
-            # Update job with results
             job.status = "completed"
             job.html_url = result["html_url"]
             job.pdf_url = result["pdf_url"]
             job.cover_url = result.get("cover_url")
-            job.github_username = result.get("github_username")
-            job.github_data = result.get("github_data")
             job.linkedin_data = result.get("linkedin_data")
+            job.github_data = result.get("github_data")
             job.ai_generated_data = result.get("resume_data")
             job.updated_at = datetime.now(timezone.utc)
 
@@ -149,35 +203,94 @@ async def get_my_resumes(
 
 @router.post("/generate", response_model=ResumeJobCreatedResponse, status_code=202)
 async def generate_resume(
-    github_token: str = Form(..., description="GitHub personal access token"),
-    linkedin_pdf: UploadFile = File(..., description="LinkedIn exported PDF resume"),
+    linkedin_job_url: str | None = Form(None, description="LinkedIn job URL (optional, requires experimental_job_details flag)"),
+    language: str = Form("en", description="Resume language (en or pt-br)"),
+    platform_content: str = Form(
+        "linkedin", description="Content platform: linkedin, github, or mixed"
+    ),
+    github_token: str | None = Form(
+        None, description="GitHub personal access token (required for github/mixed)"
+    ),
     user_id: str = Depends(get_current_user_id),
     db: AsyncSession = Depends(get_db),
 ):
     """Submit a resume generation job.
 
-    Accepts a GitHub token and LinkedIn PDF upload. Creates a background job
+    Accepts a LinkedIn job URL, language, and platform_content. Creates a background job
     and returns a job_id immediately. Poll GET /api/v1/resume/{job_id} for status.
+
+    platform_content options:
+    - "linkedin": Use only LinkedIn profile data
+    - "github": Use only GitHub profile data (requires github_token)
+    - "mixed": Use both LinkedIn and GitHub data (requires github_token)
+
+    The user's LinkedIn profile URL must be saved in their profile before
+    generating a resume (unless using github-only mode).
 
     Requires a valid Supabase JWT in the Authorization header.
     """
-    # Validate file type
-    if not linkedin_pdf.filename or not linkedin_pdf.filename.lower().endswith(".pdf"):
+    logger.info(
+        "[Request] /generate called by user %s | job_url=%s | language=%s | platform=%s",
+        user_id,
+        linkedin_job_url,
+        language,
+        platform_content,
+    )
+
+    if linkedin_job_url and not validate_linkedin_job_url(linkedin_job_url):
+        logger.warning("[Request] Invalid LinkedIn job URL: %s", linkedin_job_url)
         raise HTTPException(
             status_code=400,
-            detail="linkedin_pdf must be a PDF file (.pdf extension required)",
+            detail="Invalid LinkedIn job URL. Please provide a valid LinkedIn job URL.",
         )
 
-    # Read the PDF bytes
-    pdf_bytes = await linkedin_pdf.read()
-    if len(pdf_bytes) == 0:
-        raise HTTPException(status_code=400, detail="Uploaded PDF file is empty")
+    if language not in ["en", "pt-br"]:
+        logger.warning("[Request] Unsupported language: %s", language)
+        raise HTTPException(
+            status_code=400,
+            detail="Unsupported language. Supported languages: en, pt-br",
+        )
 
-    if len(pdf_bytes) > 10 * 1024 * 1024:  # 10MB limit
-        raise HTTPException(status_code=400, detail="PDF file too large (max 10MB)")
+    if platform_content not in ["linkedin", "github", "mixed"]:
+        logger.warning("[Request] Invalid platform_content: %s", platform_content)
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid platform_content. Supported: linkedin, github, mixed",
+        )
+
+    if platform_content in ["github", "mixed"] and not github_token:
+        logger.warning(
+            "[Request] Missing GitHub token for platform: %s", platform_content
+        )
+        raise HTTPException(
+            status_code=400,
+            detail="GitHub token is required for github and mixed platform modes",
+        )
+
+    result = await db.execute(select(User).where(User.id == user_id))
+    user = result.scalar_one_or_none()
+
+    if not user:
+        logger.warning("[Request] User not found: %s", user_id)
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if platform_content != "github" and not user.linkedin_url:
+        logger.warning(
+            "[Request] User %s has no LinkedIn URL (platform: %s)",
+            user_id,
+            platform_content,
+        )
+        raise HTTPException(
+            status_code=400,
+            detail="LinkedIn profile URL not found. Please save your LinkedIn profile URL first using PUT /api/v1/users/me",
+        )
 
     credits = await payment_service.get_user_credits(db, user_id)
+    logger.info("[Request] User %s has %s credits", user_id, credits)
     if credits < 1:
+        logger.warning(
+            "[Request] User %s has insufficient credits: %s", user_id, credits
+        )
         raise HTTPException(
             status_code=402,
             detail="Insufficient credits. Please purchase credits to generate a resume.",
@@ -186,7 +299,7 @@ async def generate_resume(
     job = ResumeJob(
         status="pending",
         user_id=user_id,
-        linkedin_filename=linkedin_pdf.filename,
+        linkedin_filename=linkedin_job_url,
     )
     session = db
     session.add(job)
@@ -195,16 +308,23 @@ async def generate_resume(
 
     job_id = str(job.id)
     logger.info(
-        "[Job %s] Created for user %s. Starting background pipeline...", job_id, user_id
+        "[Job %s] Created for user %s | platform=%s | language=%s | profile_url=%s | credits=%s. Starting background pipeline...",
+        job_id,
+        user_id,
+        platform_content,
+        language,
+        user.linkedin_url if user.linkedin_url else "none",
+        credits,
     )
 
-    # Launch background task
     asyncio.create_task(
         _run_resume_pipeline(
             job_id=job_id,
+            job_url=linkedin_job_url,
+            profile_url=user.linkedin_url if user.linkedin_url else "",
+            language=language,
+            platform_content=platform_content,
             github_token=github_token,
-            linkedin_pdf_bytes=pdf_bytes,
-            db_url="",  # Not needed, we use the shared session factory
         )
     )
 
