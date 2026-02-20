@@ -10,6 +10,8 @@ from app.config import get_settings
 from app.database import get_db
 from app.schemas.payment import (
     CreditBalanceResponse,
+    CreditPlanResponse,
+    CreatePaymentRequest,
     PaymentResponse,
     PaymentStatusResponse,
 )
@@ -21,15 +23,33 @@ settings = get_settings()
 router = APIRouter(prefix="/api/v1/payment", tags=["payment"])
 
 
+@router.get("/plans", response_model=list[CreditPlanResponse])
+async def get_credit_plans(
+    db: AsyncSession = Depends(get_db),
+):
+    plans = await payment_service.get_active_plans(db)
+    return [
+        CreditPlanResponse(
+            id=plan.id,
+            name=plan.name,
+            credits_amount=plan.credits_amount,
+            price_brl_cents=plan.price_brl_cents,
+            is_active=plan.is_active,
+        )
+        for plan in plans
+    ]
+
+
 @router.post("/create", response_model=PaymentResponse, status_code=201)
 async def create_payment(
+    request: CreatePaymentRequest,
     user_id: str = Depends(get_current_user_id),
     db: AsyncSession = Depends(get_db),
 ):
     payment = await payment_service.create_pix_payment(
         db=db,
         user_id=user_id,
-        amount_cents=settings.credit_price_cents,
+        plan_id=request.plan_id,
     )
 
     return PaymentResponse(
