@@ -12,7 +12,6 @@ dependencies = [
     "python-multipart>=0.0.18",
     "PyMuPDF>=1.25.0",
     "httpx>=0.28.0",
-    "playwright>=1.49.0",
     "jinja2>=3.1.0",
     "pydantic-settings>=2.7.0",
     "python-dotenv>=1.0.0",
@@ -20,6 +19,7 @@ dependencies = [
     "abacatepay>=1.0.0",
     "beautifulsoup4>=4.12.0",
     "scrapfly-sdk>=0.8.0",
+    "pdfshift>=1.0.0",
 ]
 
 [build-system]

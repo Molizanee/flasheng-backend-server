@@ -27,6 +27,9 @@ class Settings(BaseSettings):
     # Scrapfly
     scrapfly_api_key: str
 
+    # PDFShift
+    pdfshift_api_key: str
+
     # AnySite
     anysite_api_key: str
 
@@ -51,11 +54,11 @@ class Settings(BaseSettings):
             self.database_url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
         elif url.startswith("postgres://"):
             self.database_url = url.replace("postgres://", "postgresql+asyncpg://", 1)
-        
+
         # Remove sslmode parameter as it's handled by connect_args in database.py
         if "?sslmode=" in self.database_url:
             self.database_url = self.database_url.split("?sslmode=")[0]
-        
+
         return self
 
 
