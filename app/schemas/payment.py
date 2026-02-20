@@ -6,6 +6,21 @@ from pydantic import BaseModel, Field
 from app.models.user import PaymentStatus
 
 
+class CreditPlanResponse(BaseModel):
+    id: UUID
+    name: str
+    credits_amount: int
+    price_brl_cents: int
+    is_active: bool
+
+    class Config:
+        from_attributes = True
+
+
+class CreatePaymentRequest(BaseModel):
+    plan_id: UUID = Field(..., description="UUID do plano de créditos selecionado")
+
+
 class PaymentResponse(BaseModel):
     id: UUID
     amount_cents: int

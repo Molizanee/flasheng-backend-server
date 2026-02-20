@@ -1,10 +1,12 @@
 import logging
 from datetime import datetime, timezone
+from uuid import UUID
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import get_settings
+from app.models.credit_plan import CreditPlan
 from app.models.user import Payment, PaymentStatus, User
 
 logger = logging.getLogger(__name__)
@@ -37,13 +39,25 @@ class PaymentService:
         user = await self.get_or_create_user(db, user_id)
         return user.credits
 
+    async def get_active_plans(self, db: AsyncSession) -> list[CreditPlan]:
+        result = await db.execute(
+            select(CreditPlan).where(CreditPlan.is_active == True)
+        )
+        return list(result.scalars().all())
+
     async def create_pix_payment(
         self,
         db: AsyncSession,
         user_id: str,
-        amount_cents: int,
+        plan_id: UUID,
     ) -> Payment:
-        credits = amount_cents // 1000
+        result = await db.execute(select(CreditPlan).where(CreditPlan.id == plan_id))
+        plan = result.scalar_one_or_none()
+        if not plan:
+            raise ValueError("Plan not found")
+
+        credits = plan.credits_amount
+        amount_cents = plan.price_brl_cents
         description = f"{credits} credit(s) for Flash Resume"
 
         data = {

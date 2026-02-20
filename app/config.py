@@ -24,10 +24,17 @@ class Settings(BaseSettings):
     abacatepay_public_key: str = ""
     credit_price_cents: int = 1000
 
+    # Scrapfly
+    scrapfly_api_key: str
+
+    # AnySite
+    anysite_api_key: str
+
     # App
     app_name: str = "Flash Resume Builder"
     debug: bool = False
     dev: bool = False  # Enables dev features like auto-simulating payments
+    experimental_job_details: bool = False  # Enables experimental job scraping feature
 
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 

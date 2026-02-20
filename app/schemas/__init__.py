@@ -11,6 +11,10 @@ from app.schemas.resume import (
     EducationItem,
     TechnicalSkills,
 )
+from app.schemas.user import (
+    UserProfileResponse,
+    UserProfileUpdate,
+)
 
 __all__ = [
     "ResumeGenerateRequest",
@@ -22,4 +26,6 @@ __all__ = [
     "ExperienceItem",
     "EducationItem",
     "TechnicalSkills",
+    "UserProfileResponse",
+    "UserProfileUpdate",
 ]

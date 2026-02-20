@@ -40,6 +40,7 @@ class GitHubService:
                 "profile": {
                     "username": username,
                     "name": user.get("name", ""),
+                    "email": user.get("email", ""),
                     "bio": user.get("bio", ""),
                     "company": user.get("company", ""),
                     "location": user.get("location", ""),

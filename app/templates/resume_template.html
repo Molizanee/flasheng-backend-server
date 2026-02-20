@@ -171,6 +171,65 @@
                 font-size: 10pt;
             }
 
+            /* Personal Projects */
+            .project {
+                margin-bottom: 10px;
+            }
+
+            .project-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                margin-bottom: 2px;
+            }
+
+            .project-name {
+                font-weight: bold;
+                font-size: 10.5pt;
+            }
+
+            .project-name a {
+                color: #000;
+                text-decoration: none;
+            }
+
+            .project-name a:hover {
+                text-decoration: underline;
+            }
+
+            .project-tech {
+                font-style: italic;
+                font-size: 9.5pt;
+                color: #333;
+            }
+
+            .project-description {
+                font-size: 10pt;
+                margin-bottom: 4px;
+                line-height: 1.35;
+            }
+
+            .project ul {
+                margin-left: 18px;
+                margin-top: 3px;
+            }
+
+            .project li {
+                margin-bottom: 2px;
+                line-height: 1.3;
+                font-size: 9.5pt;
+            }
+
+            /* SEO Keywords */
+            .seo-keywords {
+                font-size: 8.5pt;
+                color: #555;
+                font-style: italic;
+                margin-top: 8px;
+                padding-top: 8px;
+                border-top: 1px solid #ddd;
+            }
+
             /* Metrics highlighting */
             strong.metric {
                 font-weight: bold;
@@ -264,6 +323,35 @@
                 {% endfor %}
             </div>
 
+            <!-- Personal Projects -->
+            {% if resume.personal_projects %}
+            <div class="section">
+                <div class="section-title">Personal Projects</div>
+                {% for project in resume.personal_projects %}
+                <div class="project">
+                    <div class="project-header">
+                        <div class="project-name">
+                            {% if project.url %}
+                            <a href="{{ project.url }}" target="_blank">{{ project.name }}</a>
+                            {% else %}
+                            {{ project.name }}
+                            {% endif %}
+                        </div>
+                        <div class="project-tech">{{ project.technologies }}</div>
+                    </div>
+                    <div class="project-description">{{ project.description }}</div>
+                    {% if project.highlights %}
+                    <ul>
+                        {% for highlight in project.highlights %}
+                        <li>{{ highlight }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
             <!-- Education & Languages -->
             <div class="section">
                 <div class="section-title">Education & Languages</div>
@@ -279,6 +367,13 @@
                 </div>
                 {% endif %}
             </div>
+
+            <!-- SEO Keywords -->
+            {% if resume.seo_keywords %}
+            <div class="section seo-keywords">
+                <strong>Keywords:</strong> {{ resume.seo_keywords }}
+            </div>
+            {% endif %}
         </div>
     </body>
 </html>
