@@ -80,13 +80,13 @@ class ResumeBuilder:
         logger.info("[Job %s] AI resume data generated successfully", job_id)
 
         logger.info("[Job %s] Rendering HTML template...", job_id)
-        html_content = self._render_html(resume_data)
+        html_content = self._render_html(resume_data, language)
 
         logger.info("[Job %s] Converting HTML to PDF...", job_id)
         pdf_bytes = await PDFConverter.html_to_pdf(html_content)
 
-        logger.info("[Job %s] Generating cover screenshot...", job_id)
-        cover_bytes = await PDFConverter.html_to_screenshot(html_content)
+        logger.info("[Job %s] Generating cover image...", job_id)
+        cover_bytes = await PDFConverter.html_to_cover(html_content)
 
         logger.info("[Job %s] Uploading to Supabase Storage...", job_id)
         html_url = await self.storage.upload_html(html_content, job_id)
@@ -105,14 +105,15 @@ class ResumeBuilder:
             "resume_data": resume_data.model_dump(),
         }
 
-    def _render_html(self, resume_data: ResumeData) -> str:
+    def _render_html(self, resume_data: ResumeData, language: str = "en") -> str:
         """Render the Jinja2 template with resume data.
 
         Args:
             resume_data: Structured resume data from the AI agent
+            language: Language code for the resume
 
         Returns:
             Complete HTML document string
         """
         template = self.jinja_env.get_template("resume_template.html")
-        return template.render(resume=resume_data)
+        return template.render(resume=resume_data, language=language)

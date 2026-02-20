@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="{{ language }}">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -35,6 +35,35 @@
                 .container {
                     padding: 0.5in;
                     margin: 0;
+                    min-height: 100vh;
+                    background: #fff;
+                }
+                @page {
+                    margin-top: 0.5in;
+                    size: A4;
+                }
+                @page :first {
+                    margin-top: 0;
+                }
+                .section:last-of-type {
+                    min-height: calc(297mm - 1in);
+                    padding-bottom: 0.5in;
+                }
+                .section {
+                    page-break-inside: avoid;
+                    break-inside: avoid;
+                }
+                .job, .project, .education-item, .skill-category {
+                    page-break-inside: avoid;
+                    break-inside: avoid;
+                }
+                .section-title {
+                    page-break-after: avoid;
+                    break-after: avoid;
+                }
+                .job-header, .project-header, .education-header {
+                    page-break-after: avoid;
+                    break-after: avoid;
                 }
             }
 
@@ -259,7 +288,7 @@
 
             <!-- Professional Summary -->
             <div class="section">
-                <div class="section-title">Professional Summary</div>
+                <div class="section-title">{{ resume.section_labels.professional_summary if resume.section_labels else "Professional Summary" }}</div>
                 <div class="summary">
                     {{ resume.professional_summary }}
                 </div>
@@ -267,36 +296,36 @@
 
             <!-- Technical Skills -->
             <div class="section">
-                <div class="section-title">Technical Skills</div>
+                <div class="section-title">{{ resume.section_labels.technical_skills if resume.section_labels else "Technical Skills" }}</div>
                 <div class="skills-grid">
                     {% if resume.technical_skills.ai_data %}
                     <div class="skill-category">
-                        <strong>AI & Data:</strong> {{ resume.technical_skills.ai_data }}
+                        <strong>{{ resume.section_labels.ai_data if resume.section_labels else "AI & Data" }}:</strong> {{ resume.technical_skills.ai_data }}
                     </div>
                     {% endif %}
                     {% if resume.technical_skills.languages_frameworks %}
                     <div class="skill-category">
-                        <strong>Languages & Frameworks:</strong> {{ resume.technical_skills.languages_frameworks }}
+                        <strong>{{ resume.section_labels.languages_frameworks if resume.section_labels else "Languages & Frameworks" }}:</strong> {{ resume.technical_skills.languages_frameworks }}
                     </div>
                     {% endif %}
                     {% if resume.technical_skills.data_infrastructure %}
                     <div class="skill-category">
-                        <strong>Data & Infrastructure:</strong> {{ resume.technical_skills.data_infrastructure }}
+                        <strong>{{ resume.section_labels.data_infrastructure if resume.section_labels else "Data & Infrastructure" }}:</strong> {{ resume.technical_skills.data_infrastructure }}
                     </div>
                     {% endif %}
                     {% if resume.technical_skills.cloud_devops %}
                     <div class="skill-category">
-                        <strong>Cloud & DevOps:</strong> {{ resume.technical_skills.cloud_devops }}
+                        <strong>{{ resume.section_labels.cloud_devops if resume.section_labels else "Cloud & DevOps" }}:</strong> {{ resume.technical_skills.cloud_devops }}
                     </div>
                     {% endif %}
                     {% if resume.technical_skills.testing_practices %}
                     <div class="skill-category">
-                        <strong>Testing & Practices:</strong> {{ resume.technical_skills.testing_practices }}
+                        <strong>{{ resume.section_labels.testing_practices if resume.section_labels else "Testing & Practices" }}:</strong> {{ resume.technical_skills.testing_practices }}
                     </div>
                     {% endif %}
                     {% if resume.technical_skills.ai_safety %}
                     <div class="skill-category">
-                        <strong>AI Safety & Guardrails:</strong> {{ resume.technical_skills.ai_safety }}
+                        <strong>{{ resume.section_labels.ai_safety if resume.section_labels else "AI Safety & Guardrails" }}:</strong> {{ resume.technical_skills.ai_safety }}
                     </div>
                     {% endif %}
                 </div>
@@ -304,7 +333,7 @@
 
             <!-- Professional Experience -->
             <div class="section">
-                <div class="section-title">Professional Experience</div>
+                <div class="section-title">{{ resume.section_labels.professional_experience if resume.section_labels else "Professional Experience" }}</div>
                 {% for job in resume.experience %}
                 <div class="job">
                     <div class="job-header">
@@ -326,7 +355,7 @@
             <!-- Personal Projects -->
             {% if resume.personal_projects %}
             <div class="section">
-                <div class="section-title">Personal Projects</div>
+                <div class="section-title">{{ resume.section_labels.personal_projects if resume.section_labels else "Personal Projects" }}</div>
                 {% for project in resume.personal_projects %}
                 <div class="project">
                     <div class="project-header">
@@ -354,7 +383,7 @@
 
             <!-- Education & Languages -->
             <div class="section">
-                <div class="section-title">Education & Languages</div>
+                <div class="section-title">{{ resume.section_labels.education_and_languages if resume.section_labels else "Education & Languages" }}</div>
                 {% for edu in resume.education %}
                 <div class="education-item">
                     <strong>{{ edu.degree }}</strong> |
@@ -363,7 +392,7 @@
                 {% endfor %}
                 {% if resume.languages %}
                 <div class="education-item" style="margin-top: 4px">
-                    <strong>Languages:</strong> {{ resume.languages | join(', ') }}
+                    <strong>{{ resume.section_labels.languages if resume.section_labels else "Languages" }}:</strong> {{ resume.languages | join(', ') }}
                 </div>
                 {% endif %}
             </div>
@@ -371,7 +400,7 @@
             <!-- SEO Keywords -->
             {% if resume.seo_keywords %}
             <div class="section seo-keywords">
-                <strong>Keywords:</strong> {{ resume.seo_keywords }}
+                <strong>{{ resume.section_labels.keywords if resume.section_labels else "Keywords" }}:</strong> {{ resume.seo_keywords }}
             </div>
             {% endif %}
         </div>

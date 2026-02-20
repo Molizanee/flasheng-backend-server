@@ -35,7 +35,9 @@ Your job is to:
 - **SEO Keywords**: Extract and include key terms from the job posting (technologies, methodologies, frameworks, certifications) to maximize ATS compatibility
 - Use semantic HTML formatting with <strong> tags for key achievements and technologies
 
-IMPORTANT: You must respond with a valid JSON object matching the exact schema specified. Do not include any text outside the JSON object. Do not wrap in markdown code blocks."""
+IMPORTANT: You must respond with a valid JSON object matching the exact schema specified. Do not include any text outside the JSON object. Do not wrap in markdown code blocks.
+
+IMPORTANT: All section_labels must be in the same language as the resume content (based on the requested language). Translate all section headers and labels to match the resume language."""
 
 USER_PROMPT_LINKEDIN_ONLY = """Based on the following LinkedIn data, generate a complete professional resume tailored to the job description.
 
@@ -82,7 +84,22 @@ Respond with a JSON object with this EXACT structure:
     ],
     "languages": ["English (Fluent)", "Portuguese (Native)"],
     "personal_projects": [],
-    "seo_keywords": "Comma-separated list of key technologies, skills, and methodologies from the job description (e.g., Project Management, Agile, Leadership, Data Analysis, Strategic Planning)"
+    "seo_keywords": "Comma-separated list of key technologies, skills, and methodologies from the job description (e.g., Project Management, Agile, Leadership, Data Analysis, Strategic Planning)",
+    "section_labels": {{
+        "professional_summary": "Professional Summary",
+        "technical_skills": "Technical Skills",
+        "ai_data": "AI & Data",
+        "languages_frameworks": "Languages & Frameworks",
+        "data_infrastructure": "Data & Infrastructure",
+        "cloud_devops": "Cloud & DevOps",
+        "testing_practices": "Testing & Practices",
+        "ai_safety": "AI Safety & Guardrails",
+        "professional_experience": "Professional Experience",
+        "personal_projects": "Personal Projects",
+        "education_and_languages": "Education & Languages",
+        "languages": "Languages",
+        "keywords": "Keywords"
+    }}
 }}
 
 IMPORTANT RULES FOR LINKEDIN PROFILES:
@@ -93,7 +110,8 @@ IMPORTANT RULES FOR LINKEDIN PROFILES:
 5. Customize the resume content to match the job requirements and keywords.
 6. SEO keywords must include key terms from the job posting to maximize ATS compatibility
 7. Personal projects should be an empty array [] for LinkedIn-only profiles
-8. Respond ONLY with the JSON object, no additional text."""
+8. All section_labels must be in the language requested by the user (translate headers like "Professional Summary", "Technical Skills", etc. to the requested language)
+9. Respond ONLY with the JSON object, no additional text."""
 
 USER_PROMPT_GITHUB_ONLY = """Based on the following GitHub profile data, generate a complete professional resume tailored to the job description.
 
@@ -153,7 +171,22 @@ Respond with a JSON object with this EXACT structure:
             ]
         }}
     ],
-    "seo_keywords": "Comma-separated list of key technologies, skills, and methodologies from the job description and GitHub activity (e.g., Python, React, AWS, CI/CD, Agile, Machine Learning, REST APIs)"
+    "seo_keywords": "Comma-separated list of key technologies, skills, and methodologies from the job description and GitHub activity (e.g., Python, React, AWS, CI/CD, Agile, Machine Learning, REST APIs)",
+    "section_labels": {{
+        "professional_summary": "Professional Summary",
+        "technical_skills": "Technical Skills",
+        "ai_data": "AI & Data",
+        "languages_frameworks": "Languages & Frameworks",
+        "data_infrastructure": "Data & Infrastructure",
+        "cloud_devops": "Cloud & DevOps",
+        "testing_practices": "Testing & Practices",
+        "ai_safety": "AI Safety & Guardrails",
+        "professional_experience": "Professional Experience",
+        "personal_projects": "Personal Projects",
+        "education_and_languages": "Education & Languages",
+        "languages": "Languages",
+        "keywords": "Keywords"
+    }}
 }}
 
 IMPORTANT RULES FOR GITHUB PROFILES:
@@ -166,7 +199,8 @@ IMPORTANT RULES FOR GITHUB PROFILES:
 7. Use <strong> HTML tags to highlight key metrics, technologies, and achievements in the summary and bullet points.
 8. The professional summary should emphasize technical expertise shown in GitHub activity.
 9. Customize the resume content to match the job requirements and keywords.
-10. Respond ONLY with the JSON object, no additional text."""
+10. All section_labels must be in the language requested by the user (translate headers like "Professional Summary", "Technical Skills", etc. to the requested language)
+11. Respond ONLY with the JSON object, no additional text."""
 
 USER_PROMPT_MIXED = """Based on the following LinkedIn and GitHub data, generate a complete professional resume tailored to the job description.
 
@@ -230,7 +264,22 @@ Respond with a JSON object with this EXACT structure:
             ]
         }}
     ],
-    "seo_keywords": "Comma-separated list of key technologies, skills, and methodologies from the job description and GitHub activity (e.g., Python, React, AWS, CI/CD, Agile, Machine Learning, REST APIs)"
+    "seo_keywords": "Comma-separated list of key technologies, skills, and methodologies from the job description and GitHub activity (e.g., Python, React, AWS, CI/CD, Agile, Machine Learning, REST APIs)",
+    "section_labels": {{
+        "professional_summary": "Professional Summary",
+        "technical_skills": "Technical Skills",
+        "ai_data": "AI & Data",
+        "languages_frameworks": "Languages & Frameworks",
+        "data_infrastructure": "Data & Infrastructure",
+        "cloud_devops": "Cloud & DevOps",
+        "testing_practices": "Testing & Practices",
+        "ai_safety": "AI Safety & Guardrails",
+        "professional_experience": "Professional Experience",
+        "personal_projects": "Personal Projects",
+        "education_and_languages": "Education & Languages",
+        "languages": "Languages",
+        "keywords": "Keywords"
+    }}
 }}
 
 IMPORTANT RULES FOR MIXED PROFILES:
@@ -244,7 +293,8 @@ IMPORTANT RULES FOR MIXED PROFILES:
 8. Keep bullet points concise but impactful - each should demonstrate value.
 9. The professional summary should be a single paragraph suitable for HTML rendering.
 10. Customize the resume content to match the job requirements and keywords.
-11. Respond ONLY with the JSON object, no additional text."""
+11. All section_labels must be in the language requested by the user (translate headers like "Professional Summary", "Technical Skills", etc. to the requested language)
+12. Respond ONLY with the JSON object, no additional text."""
 
 
 class AIAgent:
