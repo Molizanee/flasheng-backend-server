@@ -30,7 +30,8 @@ class Settings(BaseSettings):
     # AnySite
     anysite_api_key: str
 
-    # App
+    # CORS
+    allowed_domains: list[str] = ["*"]
     app_name: str = "Flash Resume Builder"
     debug: bool = False
     dev: bool = False  # Enables dev features like auto-simulating payments
