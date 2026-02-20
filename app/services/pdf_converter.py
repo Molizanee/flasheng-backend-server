@@ -1,12 +1,11 @@
 import logging
 
-import pdfshift
+import httpx
 from app.config import get_settings
 
 logger = logging.getLogger(__name__)
 
 settings = get_settings()
-pdfshift.api_key = settings.pdfshift_api_key
 
 
 class PDFConverter:
@@ -23,24 +22,30 @@ class PDFConverter:
             PDF file as bytes.
         """
         try:
-            response = pdfshift.convert(
-                html_content,
-                {
-                    "format": "pdf",
-                    "options": {
-                        "margin": {
-                            "top": "0",
-                            "right": "0",
-                            "bottom": "0",
-                            "left": "0",
+            async with httpx.AsyncClient() as client:
+                response = await client.post(
+                    "https://api.pdfshift.io/v3/convert/pdf",
+                    headers={"X-API-Key": settings.pdfshift_api_key},
+                    json={
+                        "source": html_content,
+                        "format": "pdf",
+                        "options": {
+                            "margin": {
+                                "top": "0",
+                                "right": "0",
+                                "bottom": "0",
+                                "left": "0",
+                            },
                         },
                     },
-                },
-            )
-            logger.info("PDF generated successfully (%d bytes)", len(response))
-            return response
+                )
+                response.raise_for_status()
+                logger.info(
+                    "PDF generated successfully (%d bytes)", len(response.content)
+                )
+                return response.content
         except Exception as e:
-            logger.error("PDF generation failed: %s", e, exc_info=True)
+            logger.error("PDF generation failed: %s", exc_info=True)
             raise
 
     @staticmethod
@@ -54,18 +59,24 @@ class PDFConverter:
             PNG image as bytes.
         """
         try:
-            response = pdfshift.convert(
-                html_content,
-                {
-                    "format": "png",
-                    "options": {
-                        "width": 794,
-                        "height": 1123,
+            async with httpx.AsyncClient() as client:
+                response = await client.post(
+                    "https://api.pdfshift.io/v3/convert/pdf",
+                    headers={"X-API-Key": settings.pdfshift_api_key},
+                    json={
+                        "source": html_content,
+                        "format": "png",
+                        "options": {
+                            "width": 794,
+                            "height": 1123,
+                        },
                     },
-                },
-            )
-            logger.info("Cover screenshot generated (%d bytes)", len(response))
-            return response
+                )
+                response.raise_for_status()
+                logger.info(
+                    "Cover screenshot generated (%d bytes)", len(response.content)
+                )
+                return response.content
         except Exception as e:
-            logger.error("Cover screenshot generation failed: %s", e, exc_info=True)
+            logger.error("Cover screenshot generation failed: %s", exc_info=True)
             raise
