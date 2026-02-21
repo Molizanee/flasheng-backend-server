@@ -1,408 +1,436 @@
 <!doctype html>
 <html lang="{{ language }}">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>{{ resume.full_name }} - {{ resume.title }}</title>
-        <style>
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-            }
 
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ resume.full_name }} - {{ resume.title }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.3;
+            color: #000;
+            background: #fff;
+            font-size: 10.5pt;
+        }
+
+        .container {
+            max-width: 210mm;
+            margin: 0 auto;
+            background: #fff;
+            padding: 0.75in;
+            position: relative;
+        }
+
+        /* Prevent individual items from breaking across pages */
+        .job,
+        .project,
+        .education-item,
+        .skill-category {
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        /* Keep section titles with their content - never orphan a title */
+        .section-title {
+            break-after: avoid;
+            page-break-after: avoid;
+        }
+
+        /* Keep item headers with their content */
+        .job-header,
+        .project-header,
+        .education-header {
+            break-after: avoid;
+            page-break-after: avoid;
+        }
+
+        /* Better text flow across pages */
+        p,
+        li {
+            orphans: 3;
+            widows: 3;
+        }
+
+        @page {
+            margin: 0.5in 0 0 0;
+            size: A4;
+        }
+
+        @page :first {
+            margin-top: 0;
+        }
+
+        @media print {
             body {
-                font-family: Arial, sans-serif;
-                line-height: 1.3;
-                color: #000;
-                background: #f5f5f5;
-                font-size: 10.5pt;
+                background: #fff;
             }
 
             .container {
-                max-width: 210mm;
-                margin: 0 auto;
+                padding: 0.5in;
+                margin: 0;
                 background: #fff;
-                padding: 0.75in;
-                min-height: 297mm;
-                position: relative;
             }
+        }
 
-            @media print {
-                body {
-                    background: #fff;
-                }
-                .container {
-                    padding: 0.5in;
-                    margin: 0;
-                    min-height: 100vh;
-                    background: #fff;
-                }
-                @page {
-                    margin-top: 0.5in;
-                    size: A4;
-                }
-                @page :first {
-                    margin-top: 0;
-                }
-                .section:last-of-type {
-                    min-height: calc(297mm - 1in);
-                    padding-bottom: 0.5in;
-                }
-                .section {
-                    page-break-inside: avoid;
-                    break-inside: avoid;
-                }
-                .job, .project, .education-item, .skill-category {
-                    page-break-inside: avoid;
-                    break-inside: avoid;
-                }
-                .section-title {
-                    page-break-after: avoid;
-                    break-after: avoid;
-                }
-                .job-header, .project-header, .education-header {
-                    page-break-after: avoid;
-                    break-after: avoid;
-                }
-            }
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 16px;
+            border-bottom: 1px solid #000;
+            padding-bottom: 8px;
+        }
 
-            /* Header */
-            .header {
-                text-align: center;
-                margin-bottom: 16px;
-                border-bottom: 1px solid #000;
-                padding-bottom: 8px;
-            }
+        .header h1 {
+            font-size: 20pt;
+            font-weight: bold;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
 
-            .header h1 {
-                font-size: 20pt;
-                font-weight: bold;
-                margin-bottom: 4px;
-                letter-spacing: 1px;
-            }
+        .header .title {
+            font-size: 11pt;
+            margin-bottom: 6px;
+            font-weight: normal;
+        }
 
-            .header .title {
-                font-size: 11pt;
-                margin-bottom: 6px;
-                font-weight: normal;
-            }
+        .contact {
+            font-size: 9.5pt;
+            line-height: 1.4;
+        }
 
-            .contact {
-                font-size: 9.5pt;
-                line-height: 1.4;
-            }
+        .contact a {
+            color: #000;
+            text-decoration: none;
+        }
 
-            .contact a {
-                color: #000;
-                text-decoration: none;
-            }
+        .contact a:hover {
+            text-decoration: underline;
+        }
 
-            .contact a:hover {
-                text-decoration: underline;
-            }
+        /* Section Headers */
+        .section {
+            margin-bottom: 14px;
+        }
 
-            /* Section Headers */
-            .section {
-                margin-bottom: 14px;
-            }
+        .section-title {
+            font-size: 11pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            border-bottom: 1px solid #000;
+            padding-bottom: 2px;
+        }
 
-            .section-title {
-                font-size: 11pt;
-                font-weight: bold;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-                margin-bottom: 6px;
-                border-bottom: 1px solid #000;
-                padding-bottom: 2px;
-            }
+        /* Summary */
+        .summary {
+            text-align: justify;
+            line-height: 1.4;
+        }
 
-            /* Summary */
-            .summary {
-                text-align: justify;
-                line-height: 1.4;
-            }
+        /* Skills */
+        .skills-grid {
+            line-height: 1.5;
+        }
 
-            /* Skills */
-            .skills-grid {
-                line-height: 1.5;
-            }
+        .skill-category {
+            margin-bottom: 4px;
+        }
 
-            .skill-category {
-                margin-bottom: 4px;
-            }
+        .skill-category strong {
+            font-weight: bold;
+        }
 
-            .skill-category strong {
-                font-weight: bold;
-            }
+        /* Experience */
+        .job {
+            margin-bottom: 10px;
+        }
 
-            /* Experience */
-            .job {
-                margin-bottom: 10px;
-            }
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 2px;
+        }
 
-            .job-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: baseline;
-                margin-bottom: 2px;
-            }
+        .job-title-company {
+            font-weight: bold;
+            font-size: 10.5pt;
+        }
 
-            .job-title-company {
-                font-weight: bold;
-                font-size: 10.5pt;
-            }
+        .job-date {
+            font-style: italic;
+            font-size: 9.5pt;
+            color: #333;
+        }
 
-            .job-date {
-                font-style: italic;
-                font-size: 9.5pt;
-                color: #333;
-            }
+        .job-position {
+            font-style: italic;
+            margin-bottom: 4px;
+            font-size: 10pt;
+        }
 
-            .job-position {
-                font-style: italic;
-                margin-bottom: 4px;
-                font-size: 10pt;
-            }
+        .job ul {
+            margin-left: 18px;
+            margin-top: 3px;
+        }
 
-            .job ul {
-                margin-left: 18px;
-                margin-top: 3px;
-            }
+        .job li {
+            margin-bottom: 3px;
+            line-height: 1.35;
+        }
 
-            .job li {
-                margin-bottom: 3px;
-                line-height: 1.35;
-            }
+        /* Education */
+        .education-item {
+            margin-bottom: 6px;
+        }
 
-            /* Education */
-            .education-item {
-                margin-bottom: 6px;
-            }
+        .education-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
 
-            .education-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: baseline;
-            }
+        .education-school {
+            font-weight: bold;
+        }
 
-            .education-school {
-                font-weight: bold;
-            }
+        .education-date {
+            font-style: italic;
+            font-size: 9.5pt;
+            color: #333;
+        }
 
-            .education-date {
-                font-style: italic;
-                font-size: 9.5pt;
-                color: #333;
-            }
+        .education-degree {
+            font-size: 10pt;
+        }
 
-            .education-degree {
-                font-size: 10pt;
-            }
+        /* Personal Projects */
+        .project {
+            margin-bottom: 10px;
+        }
 
-            /* Personal Projects */
-            .project {
-                margin-bottom: 10px;
-            }
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 2px;
+        }
 
-            .project-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: baseline;
-                margin-bottom: 2px;
-            }
+        .project-name {
+            font-weight: bold;
+            font-size: 10.5pt;
+        }
 
-            .project-name {
-                font-weight: bold;
-                font-size: 10.5pt;
-            }
+        .project-name a {
+            color: #000;
+            text-decoration: none;
+        }
 
-            .project-name a {
-                color: #000;
-                text-decoration: none;
-            }
+        .project-name a:hover {
+            text-decoration: underline;
+        }
 
-            .project-name a:hover {
-                text-decoration: underline;
-            }
+        .project-tech {
+            font-style: italic;
+            font-size: 9.5pt;
+            color: #333;
+        }
 
-            .project-tech {
-                font-style: italic;
-                font-size: 9.5pt;
-                color: #333;
-            }
+        .project-description {
+            font-size: 10pt;
+            margin-bottom: 4px;
+            line-height: 1.35;
+        }
 
-            .project-description {
-                font-size: 10pt;
-                margin-bottom: 4px;
-                line-height: 1.35;
-            }
+        .project ul {
+            margin-left: 18px;
+            margin-top: 3px;
+        }
 
-            .project ul {
-                margin-left: 18px;
-                margin-top: 3px;
-            }
+        .project li {
+            margin-bottom: 2px;
+            line-height: 1.3;
+            font-size: 9.5pt;
+        }
 
-            .project li {
-                margin-bottom: 2px;
-                line-height: 1.3;
-                font-size: 9.5pt;
-            }
+        /* SEO Keywords */
+        .seo-keywords {
+            font-size: 8.5pt;
+            color: #555;
+            font-style: italic;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #ddd;
+        }
 
-            /* SEO Keywords */
-            .seo-keywords {
-                font-size: 8.5pt;
-                color: #555;
-                font-style: italic;
-                margin-top: 8px;
-                padding-top: 8px;
-                border-top: 1px solid #ddd;
-            }
+        /* Metrics highlighting */
+        strong.metric {
+            font-weight: bold;
+        }
+    </style>
+</head>
 
-            /* Metrics highlighting */
-            strong.metric {
-                font-weight: bold;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="container" id="resume-container">
-            <!-- Header -->
-            <div class="header">
-                <h1>{{ resume.full_name | upper }}</h1>
-                <div class="title">{{ resume.title }}</div>
-                <div class="contact">
-                    {% if resume.email %}
-                    <a href="mailto:{{ resume.email }}">{{ resume.email }}</a>
-                    {% endif %}
-                    {% if resume.email and resume.github_url %} | {% endif %}
-                    {% if resume.github_url %}
-                    <a href="{{ resume.github_url }}" target="_blank">{{ resume.github_url | replace('https://', '') }}</a>
-                    {% endif %}
-                    {% if resume.github_url and resume.linkedin_url %} | {% endif %}
-                    {% if resume.linkedin_url %}
-                    <a href="{{ resume.linkedin_url }}" target="_blank">{{ resume.linkedin_url | replace('https://www.', '') | replace('https://', '') }}</a>
-                    {% endif %}
-                </div>
+<body>
+    <div class="container" id="resume-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>{{ resume.full_name | upper }}</h1>
+            <div class="title">{{ resume.title }}</div>
+            <div class="contact">
+                {% if resume.email %}
+                <a href="mailto:{{ resume.email }}">{{ resume.email }}</a>
+                {% endif %}
+                {% if resume.email and resume.github_url %} | {% endif %}
+                {% if resume.github_url %}
+                <a href="{{ resume.github_url }}" target="_blank">{{ resume.github_url | replace('https://', '') }}</a>
+                {% endif %}
+                {% if resume.github_url and resume.linkedin_url %} | {% endif %}
+                {% if resume.linkedin_url %}
+                <a href="{{ resume.linkedin_url }}" target="_blank">{{ resume.linkedin_url | replace('https://www.', '')
+                    | replace('https://', '') }}</a>
+                {% endif %}
             </div>
+        </div>
 
-            <!-- Professional Summary -->
-            <div class="section">
-                <div class="section-title">{{ resume.section_labels.professional_summary if resume.section_labels else "Professional Summary" }}</div>
-                <div class="summary">
-                    {{ resume.professional_summary }}
-                </div>
+        <!-- Professional Summary -->
+        <div class="section">
+            <div class="section-title">{{ resume.section_labels.professional_summary if resume.section_labels else
+                "Professional Summary" }}</div>
+            <div class="summary">
+                {{ resume.professional_summary }}
             </div>
+        </div>
 
-            <!-- Technical Skills -->
-            <div class="section">
-                <div class="section-title">{{ resume.section_labels.technical_skills if resume.section_labels else "Technical Skills" }}</div>
-                <div class="skills-grid">
-                    {% if resume.technical_skills.ai_data %}
-                    <div class="skill-category">
-                        <strong>{{ resume.section_labels.ai_data if resume.section_labels else "AI & Data" }}:</strong> {{ resume.technical_skills.ai_data }}
-                    </div>
-                    {% endif %}
-                    {% if resume.technical_skills.languages_frameworks %}
-                    <div class="skill-category">
-                        <strong>{{ resume.section_labels.languages_frameworks if resume.section_labels else "Languages & Frameworks" }}:</strong> {{ resume.technical_skills.languages_frameworks }}
-                    </div>
-                    {% endif %}
-                    {% if resume.technical_skills.data_infrastructure %}
-                    <div class="skill-category">
-                        <strong>{{ resume.section_labels.data_infrastructure if resume.section_labels else "Data & Infrastructure" }}:</strong> {{ resume.technical_skills.data_infrastructure }}
-                    </div>
-                    {% endif %}
-                    {% if resume.technical_skills.cloud_devops %}
-                    <div class="skill-category">
-                        <strong>{{ resume.section_labels.cloud_devops if resume.section_labels else "Cloud & DevOps" }}:</strong> {{ resume.technical_skills.cloud_devops }}
-                    </div>
-                    {% endif %}
-                    {% if resume.technical_skills.testing_practices %}
-                    <div class="skill-category">
-                        <strong>{{ resume.section_labels.testing_practices if resume.section_labels else "Testing & Practices" }}:</strong> {{ resume.technical_skills.testing_practices }}
-                    </div>
-                    {% endif %}
-                    {% if resume.technical_skills.ai_safety %}
-                    <div class="skill-category">
-                        <strong>{{ resume.section_labels.ai_safety if resume.section_labels else "AI Safety & Guardrails" }}:</strong> {{ resume.technical_skills.ai_safety }}
-                    </div>
-                    {% endif %}
+        <!-- Technical Skills -->
+        <div class="section">
+            <div class="section-title">{{ resume.section_labels.technical_skills if resume.section_labels else
+                "Technical Skills" }}</div>
+            <div class="skills-grid">
+                {% if resume.technical_skills.ai_data %}
+                <div class="skill-category">
+                    <strong>{{ resume.section_labels.ai_data if resume.section_labels else "AI & Data" }}:</strong> {{
+                    resume.technical_skills.ai_data }}
                 </div>
-            </div>
-
-            <!-- Professional Experience -->
-            <div class="section">
-                <div class="section-title">{{ resume.section_labels.professional_experience if resume.section_labels else "Professional Experience" }}</div>
-                {% for job in resume.experience %}
-                <div class="job">
-                    <div class="job-header">
-                        <div class="job-title-company">{{ job.company }}</div>
-                        <div class="job-date">{{ job.date_range }}</div>
-                    </div>
-                    <div class="job-position">{{ job.position }}</div>
-                    {% if job.bullets %}
-                    <ul>
-                        {% for bullet in job.bullets %}
-                        <li>{{ bullet }}</li>
-                        {% endfor %}
-                    </ul>
-                    {% endif %}
+                {% endif %}
+                {% if resume.technical_skills.languages_frameworks %}
+                <div class="skill-category">
+                    <strong>{{ resume.section_labels.languages_frameworks if resume.section_labels else "Languages &
+                        Frameworks" }}:</strong> {{ resume.technical_skills.languages_frameworks }}
                 </div>
-                {% endfor %}
-            </div>
-
-            <!-- Personal Projects -->
-            {% if resume.personal_projects %}
-            <div class="section">
-                <div class="section-title">{{ resume.section_labels.personal_projects if resume.section_labels else "Personal Projects" }}</div>
-                {% for project in resume.personal_projects %}
-                <div class="project">
-                    <div class="project-header">
-                        <div class="project-name">
-                            {% if project.url %}
-                            <a href="{{ project.url }}" target="_blank">{{ project.name }}</a>
-                            {% else %}
-                            {{ project.name }}
-                            {% endif %}
-                        </div>
-                        <div class="project-tech">{{ project.technologies }}</div>
-                    </div>
-                    <div class="project-description">{{ project.description }}</div>
-                    {% if project.highlights %}
-                    <ul>
-                        {% for highlight in project.highlights %}
-                        <li>{{ highlight }}</li>
-                        {% endfor %}
-                    </ul>
-                    {% endif %}
+                {% endif %}
+                {% if resume.technical_skills.data_infrastructure %}
+                <div class="skill-category">
+                    <strong>{{ resume.section_labels.data_infrastructure if resume.section_labels else "Data &
+                        Infrastructure" }}:</strong> {{ resume.technical_skills.data_infrastructure }}
                 </div>
-                {% endfor %}
-            </div>
-            {% endif %}
-
-            <!-- Education & Languages -->
-            <div class="section">
-                <div class="section-title">{{ resume.section_labels.education_and_languages if resume.section_labels else "Education & Languages" }}</div>
-                {% for edu in resume.education %}
-                <div class="education-item">
-                    <strong>{{ edu.degree }}</strong> |
-                    {{ edu.institution }} | {{ edu.date_range }}
+                {% endif %}
+                {% if resume.technical_skills.cloud_devops %}
+                <div class="skill-category">
+                    <strong>{{ resume.section_labels.cloud_devops if resume.section_labels else "Cloud & DevOps"
+                        }}:</strong> {{ resume.technical_skills.cloud_devops }}
                 </div>
-                {% endfor %}
-                {% if resume.languages %}
-                <div class="education-item" style="margin-top: 4px">
-                    <strong>{{ resume.section_labels.languages if resume.section_labels else "Languages" }}:</strong> {{ resume.languages | join(', ') }}
+                {% endif %}
+                {% if resume.technical_skills.testing_practices %}
+                <div class="skill-category">
+                    <strong>{{ resume.section_labels.testing_practices if resume.section_labels else "Testing &
+                        Practices" }}:</strong> {{ resume.technical_skills.testing_practices }}
+                </div>
+                {% endif %}
+                {% if resume.technical_skills.ai_safety %}
+                <div class="skill-category">
+                    <strong>{{ resume.section_labels.ai_safety if resume.section_labels else "AI Safety & Guardrails"
+                        }}:</strong> {{ resume.technical_skills.ai_safety }}
                 </div>
                 {% endif %}
             </div>
+        </div>
 
-            <!-- SEO Keywords -->
-            {% if resume.seo_keywords %}
-            <div class="section seo-keywords">
-                <strong>{{ resume.section_labels.keywords if resume.section_labels else "Keywords" }}:</strong> {{ resume.seo_keywords }}
+        <!-- Professional Experience -->
+        <div class="section">
+            <div class="section-title">{{ resume.section_labels.professional_experience if resume.section_labels else
+                "Professional Experience" }}</div>
+            {% for job in resume.experience %}
+            <div class="job">
+                <div class="job-header">
+                    <div class="job-title-company">{{ job.company }}</div>
+                    <div class="job-date">{{ job.date_range }}</div>
+                </div>
+                <div class="job-position">{{ job.position }}</div>
+                {% if job.bullets %}
+                <ul>
+                    {% for bullet in job.bullets %}
+                    <li>{{ bullet }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Personal Projects -->
+        {% if resume.personal_projects %}
+        <div class="section">
+            <div class="section-title">{{ resume.section_labels.personal_projects if resume.section_labels else
+                "Personal Projects" }}</div>
+            {% for project in resume.personal_projects %}
+            <div class="project">
+                <div class="project-header">
+                    <div class="project-name">
+                        {% if project.url %}
+                        <a href="{{ project.url }}" target="_blank">{{ project.name }}</a>
+                        {% else %}
+                        {{ project.name }}
+                        {% endif %}
+                    </div>
+                    <div class="project-tech">{{ project.technologies }}</div>
+                </div>
+                <div class="project-description">{{ project.description }}</div>
+                {% if project.highlights %}
+                <ul>
+                    {% for highlight in project.highlights %}
+                    <li>{{ highlight }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Education & Languages -->
+        <div class="section">
+            <div class="section-title">{{ resume.section_labels.education_and_languages if resume.section_labels else
+                "Education & Languages" }}</div>
+            {% for edu in resume.education %}
+            <div class="education-item">
+                <strong>{{ edu.degree }}</strong> |
+                {{ edu.institution }} | {{ edu.date_range }}
+            </div>
+            {% endfor %}
+            {% if resume.languages %}
+            <div class="education-item" style="margin-top: 4px">
+                <strong>{{ resume.section_labels.languages if resume.section_labels else "Languages" }}:</strong> {{
+                resume.languages | join(', ') }}
             </div>
             {% endif %}
         </div>
-    </body>
+
+        <!-- SEO Keywords -->
+        {% if resume.seo_keywords %}
+        <div class="section seo-keywords">
+            <strong>{{ resume.section_labels.keywords if resume.section_labels else "Keywords" }}:</strong> {{
+            resume.seo_keywords }}
+        </div>
+        {% endif %}
+    </div>
+</body>
+
 </html>

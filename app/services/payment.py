@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from datetime import datetime, timezone
 from uuid import UUID
@@ -13,6 +14,9 @@ logger = logging.getLogger(__name__)
 
 
 class PaymentService:
+    ABACATE_TIMEOUT = 15  # seconds for AbacatePay API calls
+    ABACATE_CREATE_RETRIES = 2  # max retries for PIX create
+
     def __init__(self):
         self.settings = get_settings()
         self._client = None
@@ -22,7 +26,10 @@ class PaymentService:
         if self._client is None:
             import abacatepay
 
-            self._client = abacatepay.AbacatePay(self.settings.abacatepay_api_key)
+            self._client = abacatepay.AbacatePay(
+                self.settings.abacatepay_api_key,
+                async_mode=True,
+            )
         return self._client
 
     async def get_or_create_user(self, db: AsyncSession, user_id: str) -> User:
@@ -65,8 +72,41 @@ class PaymentService:
             "description": description[:37],
             "expires_in": 3600,
         }
-        pix_data = self.client.pixQrCode.create(data=data)
-        print(pix_data)
+
+        # Retry with exponential backoff for transient failures
+        last_error = None
+        for attempt in range(1, self.ABACATE_CREATE_RETRIES + 2):
+            try:
+                pix_data = await asyncio.wait_for(
+                    self.client.pixQrCode.create(data=data),
+                    timeout=self.ABACATE_TIMEOUT,
+                )
+                break
+            except asyncio.TimeoutError:
+                last_error = TimeoutError(
+                    f"AbacatePay PIX create timed out after {self.ABACATE_TIMEOUT}s"
+                )
+                logger.warning(
+                    "AbacatePay PIX create timeout (attempt %d/%d)",
+                    attempt,
+                    self.ABACATE_CREATE_RETRIES + 1,
+                )
+            except Exception as e:
+                last_error = e
+                logger.warning(
+                    "AbacatePay PIX create failed (attempt %d/%d): %s",
+                    attempt,
+                    self.ABACATE_CREATE_RETRIES + 1,
+                    e,
+                )
+            if attempt <= self.ABACATE_CREATE_RETRIES:
+                await asyncio.sleep(2 ** (attempt - 1))  # 1s, 2s backoff
+        else:
+            raise ValueError(
+                f"Failed to create PIX QR Code after {self.ABACATE_CREATE_RETRIES + 1} attempts: {last_error}"
+            )
+
+        logger.info("PIX QR Code created: %s", pix_data.id)
         expires_at = None
         if hasattr(pix_data, "expires_at") and pix_data.expires_at:
             try:
@@ -117,7 +157,25 @@ class PaymentService:
         if payment.status == PaymentStatus.PAID:
             return payment
 
-        status_data = self.client.pixQrCode.check(id=payment.abacatepay_id)
+        try:
+            status_data = await asyncio.wait_for(
+                self.client.pixQrCode.check(id=payment.abacatepay_id),
+                timeout=self.ABACATE_TIMEOUT,
+            )
+        except asyncio.TimeoutError:
+            logger.warning(
+                "AbacatePay status check timed out for payment %s",
+                payment.id,
+            )
+            return payment  # Return current state instead of hanging
+        except Exception as e:
+            logger.warning(
+                "AbacatePay status check failed for payment %s: %s",
+                payment.id,
+                e,
+            )
+            return payment
+
         new_status = PaymentStatus(status_data.status)
 
         if new_status != payment.status:
@@ -181,7 +239,10 @@ class PaymentService:
 
         logger.info("Simulating payment for abacatepay_id: %s", abacatepay_id)
         try:
-            self.client.pixQrCode.simulate(id=abacatepay_id)
+            await asyncio.wait_for(
+                self.client.pixQrCode.simulate(id=abacatepay_id),
+                timeout=self.ABACATE_TIMEOUT,
+            )
             logger.info("Payment simulation successful for: %s", abacatepay_id)
         except Exception as e:
             logger.warning("Payment simulation failed: %s", e)

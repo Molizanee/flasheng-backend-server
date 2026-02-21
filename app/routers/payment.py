@@ -45,7 +45,7 @@ async def create_payment(
     request: CreatePaymentRequest,
     user_id: str = Depends(get_current_user_id),
     db: AsyncSession = Depends(get_db),
-):
+):    
     payment = await payment_service.create_pix_payment(
         db=db,
         user_id=user_id,

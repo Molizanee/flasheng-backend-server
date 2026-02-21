@@ -296,6 +296,52 @@ IMPORTANT RULES FOR MIXED PROFILES:
 11. All section_labels must be in the language requested by the user (translate headers like "Professional Summary", "Technical Skills", etc. to the requested language)
 12. Respond ONLY with the JSON object, no additional text."""
 
+PT_BR_ADDENDUM = """
+
+## CRITICAL: PORTUGUESE (BRAZIL) LANGUAGE REQUIREMENT
+This resume MUST be generated entirely in Português do Brasil (pt-BR). Follow these rules strictly:
+
+### Section Labels (OBRIGATÓRIO)
+Use these EXACT Portuguese section labels in the JSON output:
+{{
+    "section_labels": {{
+        "professional_summary": "Resumo Profissional",
+        "technical_skills": "Habilidades Técnicas",
+        "ai_data": "IA & Dados",
+        "languages_frameworks": "Linguagens & Frameworks",
+        "data_infrastructure": "Dados & Infraestrutura",
+        "cloud_devops": "Cloud & DevOps",
+        "testing_practices": "Testes & Práticas",
+        "ai_safety": "Segurança de IA & Guardrails",
+        "professional_experience": "Experiência Profissional",
+        "personal_projects": "Projetos Pessoais",
+        "education_and_languages": "Formação Acadêmica & Idiomas",
+        "languages": "Idiomas",
+        "keywords": "Palavras-Chave"
+    }}
+}}
+
+### Date Format
+- Use Portuguese month abbreviations: Jan, Fev, Mar, Abr, Mai, Jun, Jul, Ago, Set, Out, Nov, Dez
+- Use "Presente" instead of "Present" for current positions
+- Example: "Mar 2022 - Presente", "Jan 2020 - Dez 2023"
+
+### Languages
+- Write language proficiency in Portuguese: "Inglês (Fluente)", "Português (Nativo)", "Espanhol (Intermediário)", "Francês (Básico)"
+
+### Job Titles
+- Translate job titles to Portuguese: "Engenheiro de Software Sênior", "Desenvolvedor Full Stack", "Desenvolvedor Back-End", "Analista de Sistemas", "Líder Técnico", "Arquiteto de Software"
+
+### Education
+- Translate degree names to Portuguese: "Bacharelado em Ciência da Computação", "Mestrado em Engenharia de Software", "Tecnólogo em Análise e Desenvolvimento de Sistemas"
+
+### Content Rules
+- Write the professional_summary entirely in Portuguese
+- Write ALL experience bullet points in Portuguese using action verbs like: Desenvolveu, Implementou, Otimizou, Liderou, Projetou, Automatizou, Integrou, Reduziu, Aumentou, Gerenciou, Arquitetou, Entregou
+- Keep technology names in English (React, Python, AWS, Docker, etc.) as they are universal
+- Translate seo_keywords concepts to Portuguese where applicable (ex: "desenvolvimento web", "arquitetura de microsserviços", "metodologias ágeis")
+- NEVER use English terms like "Professional Summary", "Technical Skills", "Present", "Professional Experience" etc. in any field"""
+
 
 class AIAgent:
     """AI agent that uses OpenRouter to generate structured resume content."""
@@ -370,6 +416,10 @@ class AIAgent:
                 linkedin_data=json.dumps(linkedin_data or {}, indent=2, default=str),
                 github_data=json.dumps(github_data or {}, indent=2, default=str),
             )
+
+        # Append PT-BR specific instructions when generating Portuguese resumes
+        if language == "pt-br":
+            user_prompt += PT_BR_ADDENDUM
 
         async with httpx.AsyncClient(timeout=120.0) as client:
             response = await client.post(
