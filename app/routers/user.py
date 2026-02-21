@@ -14,6 +14,29 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/users", tags=["users"])
 
 
+@router.post("", response_model=UserProfileResponse, status_code=201)
+async def create_user(
+    user_id: str = Depends(get_current_user_id),
+    db: AsyncSession = Depends(get_db),
+):
+    """Create a new user.
+
+    Requires a valid Supabase JWT in the Authorization header.
+    """
+    result = await db.execute(select(User).where(User.id == user_id))
+    existing_user = result.scalar_one_or_none()
+
+    if existing_user:
+        return UserProfileResponse.model_validate(existing_user)
+
+    new_user = User(id=user_id, credits=0)
+    db.add(new_user)
+    await db.commit()
+    await db.refresh(new_user)
+
+    return UserProfileResponse.model_validate(new_user)
+
+
 @router.get("/me", response_model=UserProfileResponse)
 async def get_my_profile(
     user_id: str = Depends(get_current_user_id),
